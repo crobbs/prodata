@@ -1,0 +1,24 @@
+{
+    "question": "Você está fazendo a solicitação pela __PJ de Tutela Coletiva do núcleo de XX?",
+    "context": "Início",
+    "controllers": {},
+    "jsonToLoad": null,
+    "options": [
+        {
+            "option": "Sim",
+            "question": "O processo tramita pelo IntegraX?",
+            "context": "tramita pelo IntegraX",
+            "controllers": {},
+            "jsonToLoad": null,
+            "options": []
+        },
+        {
+            "option": "Não",
+            "question": "O processo tramita pelo IntegraX?",
+            "context": "Não tramita pelo IntegraX",
+            "controllers": {},
+            "jsonToLoad": null,
+            "options": []
+        }
+    ]
+}
