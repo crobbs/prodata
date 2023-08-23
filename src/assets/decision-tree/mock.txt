@@ -1,0 +1,26 @@
+"pergunta": "Houve pagamento parcial da multa?",
+"texto": "de multa diária",
+"opcoes": {
+    "Sim": {
+        "pergunta": "Você precisa de ajuda do GATE.",
+        "texto": "com pagamento parcial da multa",
+        "opcoes": {},
+        "action": "SAT"
+    },
+    "Não": {
+        "pergunta": "Informe o valor da multa diária / termo inicial / termo final, se diverso da data do cálculo:",
+        "texto": "sem pagamento parcial da multa",
+        "tipoCalculo": "multa-diaria",
+        "action": "formValorDataPadrao",
+        "temJuros": true,
+        "days360": false,
+        "correcao": "TJ6899",
+        "descricao": "Multa civil",
+        "obsJuros": "Percentual de juros até 10/01/2003: 6% ao ano ou 0,5% ao mês. Percentual de juros a partir de 11/01/2003: 12% ao ano ou 1% ao mês.",
+        "indiceJurosTexto": "Juros do Código Civil - Lei nº 10406/02 (6% a.a. até 10/01/2003 e 12% a.a. a partir de 10/01/2003 a.a.)",
+        "indiceJuros": "codigo_civil",
+        "isEnd": true,
+        "opcoes": {}
+    }
+}
+ 

@@ -1,0 +1,304 @@
+<div class="container" *ngIf="showTemplate">
+
+    <div fxLayout="row" [@fadeOut] fxLayout.xs="column" style="min-height: 100vh;">
+        <!-- iNÍCIO DO DIV DAS OPÇÕES E FORM - ESQUERDA - AZUL-->
+        <div fxLayout="column" fxLayoutAlign="start start" fxFlex="2 0 60%" fxFlex.lt-md="100%" class="div-opcoes">
+            <!-- Content for the left column -->
+            <div class="header ">
+                <img style=" height: auto; width: 155px;" src="../../assets/imgs/GATE_LOGO_simplificado.png">
+            </div>
+            <button (click)="logOut()" mat-button matTooltip="Voltar um passo">
+                <mat-icon>arrow_back</mat-icon>
+                logout
+            </button>
+
+            <button (click)="getUser()" mat-button matTooltip="GETUSER">
+                <mat-icon>arrow_back</mat-icon>
+                getuser
+            </button>
+
+
+            <div fxFlex="100" fxFlex.xs="100" fxLayout="column" style="padding: 5px; margin: auto; margin-top: 40px;">
+
+
+
+                <mat-card class="transparent card-solicitante ">
+                    <mat-progress-bar *ngIf="inTransition === true" color="#ad8847" mode="indeterminate"
+                        style="width: 400px; margin: auto;">
+                    </mat-progress-bar>
+
+
+                    <!--  DEFINIÇÃO DE SOLICITANTE ************************************************* -->
+                    <div @fade *ngIf="inTransition === false && stepToLoad === 'solicitante'"
+                        style="min-height: 165px; display: block;">
+
+                        <mat-card>
+                            <mat-card-title>Solicitação de Análise Técnica - GATE</mat-card-title>
+                            <div style="margin: 10px;">
+                                <h3>Solicitante</h3>
+                                O procedimento para o qual deseja atendimento do GATE está com
+                                carga para você ou
+                                terceiros (Membro do MPRJ)?
+                            </div>
+                            <div>
+
+                                <div @fadeOut *ngIf="!spinner && preForm.solicitanteObj === null"
+                                    class=" escolhe-solicitante">
+                                    <div class="solicitante">
+                                        <h3>Está com carga para mim</h3>
+                                        <h4>Dados do solicitante</h4>
+                                        <p><strong>Nome: </strong>{{usuarioSCA?.name}}</p>
+                                        <p><strong>Matrícula: </strong>{{usuarioSCA?.matricula}}</p>
+                                        <div style="margin-top: 26px;">
+                                            <button
+                                                (click)="setPreForm ('solicitanteObj', {nome: usuarioSCA.name, matricula:usuarioSCA.matricula}, 'procedimento')"
+                                                mat-flat-button color="primary">Continuar</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="escolhe-solicitante">
+                                    <div class="solicitante">
+                                        <h3 *ngIf="!spinner && preForm.solicitanteObj === null">Está com carga para
+                                            terceiros (Membro)</h3>
+                                        <h3 *ngIf="!spinner && preForm.solicitanteObj !== null">Membro solicitante</h3>
+                                        <div *ngIf="spinner">
+                                            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                                            <p> Buscando Membro...</p>
+                                        </div>
+                                        <div *ngIf="!spinner && preForm.solicitanteObj === null">
+
+                                            <p> Esta solicitação está sendo realizada para o Membro de matrícula:</p>
+
+                                            <mat-form-field>
+                                                <input matInput placeholder="Matrícula do Membro"
+                                                    [(ngModel)]="solicitanteMat" />
+                                            </mat-form-field>
+
+                                            <button mat-flat-button color="primary"
+                                                (click)="getMembroByMatricula(solicitanteMat)">Buscar</button>
+
+                                        </div>
+                                        <div @fade *ngIf="!spinner && preForm.solicitanteObj !== null">
+                                            <div><strong>Nome: </strong>{{preForm.solicitanteObj.nome}}</div>
+                                            <div><strong>Matrícula: </strong>{{preForm.solicitanteObj.matricula}}</div>
+                                            <div
+                                                style="margin-top: 26px; display: flex; justify-content: space-between;">
+                                                <button
+                                                    (click)="setPreForm ('solicitanteObj', preForm.solicitanteObj, 'procedimento')"
+                                                    mat-flat-button color="primary">Continuar</button>
+                                                <button mat-button color="primary"
+                                                    (click)="preForm.solicitanteObj = null">
+                                                    <mat-icon aria-label="Back arrow">arrow_back</mat-icon>
+                                                    Voltar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <mat-card-footer>
+
+                            </mat-card-footer>
+                        </mat-card>
+                    </div>
+
+
+
+                    <!--  DEFINIÇÃO  DO PROCEDIMENTO PARA ATENDIMENTO (N MPRJ) ************************************************* -->
+                    <div *ngIf="inTransition === false && stepToLoad === 'procedimento'"
+                        style="min-height: 165px; display: block;">
+                        <mat-card @fade>
+                            <mat-card-title>Procedimento a ser atendido</mat-card-title>
+                            <p>Selecione o procedimento para o qual deseja atendimento do GATE</p>
+                            <div style="height: 400px; overflow: auto;">
+                                <mat-action-list>
+                                    <mat-list-item (click)="setPreForm ('procedimentoObj', procedimento, 'municipio')"
+                                        *ngFor="let procedimento of procedimentosUsuSolicit">
+                                        <h3 matLine><strong>Órgão de Execução: </strong>{{procedimento.ORGAO}}</h3>
+                                        <p matLine><strong>Origem - Tipo: </strong>{{procedimento.ORIGEM}}
+                                            ({{procedimento.PROC_DK}}) - {{procedimento.TIPO_DOCUMENTO}}</p>
+                                        <p matLine><strong>Assunto: </strong>{{procedimento.ASSUNTO_PROCESSO}}</p>
+                                    </mat-list-item>
+                                </mat-action-list>
+                            </div>
+                            <mat-card-footer>
+                            </mat-card-footer>
+                        </mat-card>
+                    </div>
+
+
+
+                    <!--  DEFINIÇÃO  DO MUNICIPIO DO OBJETO DA SAT ************************************************* -->
+                    <div *ngIf="inTransition === false && stepToLoad === 'municipio'"
+                        style="min-height: 165px; display: block;">
+                        <mat-card @fade>
+                            <mat-card-title>Município do objeto da SAT</mat-card-title>
+
+                            <mat-card-content>
+                                <p>Selecione o município onde está o objeto da SAT</p>
+                                <mat-form-field style="width: 100%;">
+                                    <input type="text" matInput [(ngModel)]="municipio"
+                                        placeholder="Busque e selecione o município" (input)="filterCities(municipio)">
+
+                                </mat-form-field>
+                                <div style="height: 400px; overflow: auto;">
+                                    <mat-list role="list">
+                                        <mat-list-item *ngFor="let municipio of filteredMunicipios"
+                                            (click)="setPreForm('municipioObj', {CIDA_NM_CIDADE: municipio.CIDA_NM_CIDADE, CIDA_DK: municipio.CIDA_DK }, 'complementacao')"
+                                            role="listitem">{{ municipio.CIDA_NM_CIDADE }}</mat-list-item>
+                                    </mat-list>
+                                </div>
+                            </mat-card-content>
+                            <mat-card-footer>
+                            </mat-card-footer>
+                        </mat-card>
+                    </div>
+
+
+                    <!--  DEFINIÇÃO  COMPLEMENTACAO SIM + N IT /NAO ************************************************* -->
+                    <div *ngIf="inTransition === false && stepToLoad === 'complementacao'"
+                        style="min-height: 165px; display: block;">
+                        <mat-card @fade>
+                            <mat-card-title>Complementação</mat-card-title>
+                            <mat-card-content>
+                                <p>Esta SAT é complementação de IT anterior?</p>
+                                <mat-button-toggle-group aria-label="Font Style"
+                                    [(ngModel)]="preForm.complementacaoObj.isComplementacao">
+                                    <mat-button-toggle [value]="false"
+                                        (click)="setPreForm ('complementacaoObj', {isComplementacao: false }, 'tema');preForm.complementacaoObj.nITAnterior = null ">Não</mat-button-toggle>
+                                    <mat-button-toggle [value]="true"
+                                        (click)="preForm.complementacaoObj.isComplementacao= true">Sim</mat-button-toggle>
+                                </mat-button-toggle-group>
+                                <div @fade *ngIf="preForm.complementacaoObj.isComplementacao=== true">
+                                    <p> Digite o número da IT a ser complementada:</p>
+                                    <mat-form-field>
+                                        <input matInput placeholder="Número da IT anterior"
+                                            [(ngModel)]="preForm.complementacaoObj.nITAnterior" />
+                                    </mat-form-field>
+                                    <button mat-flat-button color="primary"
+                                        (click)="changeStep('tema')">Continuar</button>
+                                </div>
+                            </mat-card-content>
+                            <mat-card-footer>
+                            </mat-card-footer>
+                        </mat-card>
+                    </div>
+
+                    <!--  DEFINIÇÃO  DO(S) TEMAS(S) ************************************************* -->
+                    <div *ngIf="inTransition === false && stepToLoad === 'tema'"
+                        style="min-height: 165px; display: block;">
+                        <mat-card @fade>
+                            <mat-card-title>Tema</mat-card-title>
+                            <mat-card-content>
+                                <p>Selecione o tema da SAT</p>
+                                <mat-form-field style="width: 100%;">
+                                    <input type="text" matInput [(ngModel)]="searchTema"
+                                        placeholder="Busque e selecione o(s) tema(s)" (input)="filterTemas(searchTema)">
+
+                                </mat-form-field>
+                                <div style="height: 400px; overflow: auto;">
+                                    <mat-list role="list">
+                                        <mat-list-item *ngFor="let tema of filteredTemas" (click)="addTema(tema)"
+                                            role="listitem">{{ tema.TMAN_NM_TEMA }}</mat-list-item>
+                                    </mat-list>
+                                </div>
+                            </mat-card-content>
+                            <mat-card-footer>
+                            </mat-card-footer>
+                        </mat-card>
+                    </div>
+
+
+                </mat-card>
+
+            </div>
+            <div style="display: flex; justify-content: space-between; color: #fff; width: 100%;">
+                <button [disabled]="isRoot" (click)="navigateBack()" mat-button matTooltip="Voltar um passo">
+                    <mat-icon>arrow_back</mat-icon>
+                    Voltar
+                </button>
+
+                <button (click)=" goHome()" mat-button matTooltip="Tela inicial"
+                    aria-label="Voltar à tela inicial para iniciar novo cálculo">
+
+                    <mat-icon>home</mat-icon>
+                </button>
+            </div>
+        </div> <!-- FIM DO DIV DAS OPÇÕES E FORM - ESQUERDA - AZUL-->
+
+
+
+
+        <!-- iNÍCIO DO DIV DETALHES DA SAT - DIREITA - BRANCO-->
+        <div *ngIf="stepToLoad !== 'solicitante'" [@fadeOut] fxLayout="column" fxLayoutAlign="start start"
+            fxFlex="1 0 40%" fxFlex.lt-md="100%" @detalhes style="background-color: #fff;">
+            <!-- Content for the right column -->
+            <div style="width: 100%;">
+                <div>
+                    <!-- loop over the cardList and show the cards -->
+
+
+                    <div style="padding: 5px;">
+                        <!-- Detalhes da SAT -->
+                        <mat-card class="detalhes">
+                            <h2><strong>Solicitação de Análise Técnica</strong><strong></strong></h2>
+                            <div style="text-align: left;">
+                                <div @fade (click)="changeStep('solicitante')">
+                                    <h3>Membro solicitante</h3>
+                                    <div><strong>Nome: </strong>{{preForm.solicitanteObj.nome}}</div>
+                                    <div><strong>Matrícula: </strong>{{preForm.solicitanteObj.matricula}}</div>
+                                </div>
+                                <div @fade *ngIf="preForm.procedimentoObj !== null"
+                                    (click)="changeStep('procedimento')">
+                                    <h3>Dados do procedimento</h3>
+                                    <div><strong>Órgão de Execução: </strong>{{preForm.procedimentoObj?.ORGAO}}</div>
+                                    <div><strong>Origem - Tipo: </strong>{{preForm.procedimentoObj?.ORIGEM}}
+                                        ({{preForm.procedimentoObj?.PROC_DK}}) -
+                                        {{preForm.procedimentoObj?.TIPO_DOCUMENTO}}</div>
+                                    <div><strong>Assunto: </strong>{{preForm.procedimentoObj?.ASSUNTO_PROCESSO}}</div>
+                                </div>
+                                <div @fade *ngIf="preForm.municipioObj !== null" (click)="changeStep('municipio')">
+                                    <strong>Município do Objeto:
+                                    </strong>{{preForm.municipioObj?.CIDA_NM_CIDADE}}
+                                </div>
+
+                                <div @fade *ngIf="preForm.complementacaoObj.isComplementacao !== null"
+                                    (click)="changeStep('complementacao')">
+                                    <h3>Complementação</h3>
+                                    <div *ngIf="preForm.complementacaoObj.isComplementacao === false">
+                                        Esta SAT <strong>não </strong> é complementação de IT anterior
+                                    </div>
+                                    <div *ngIf="preForm.complementacaoObj.isComplementacao === true">
+                                        Esta SAT é complementação da IT:
+                                        <strong>{{preForm.complementacaoObj.nITAnterior}} </strong>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+
+
+
+
+
+
+                        </mat-card>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- FIM DO DIV DETALHES DO CÁLCULO - DIREITA - BRANCO--->
+
+    </div>
+
+
+    <!-- INICIO DO DIV TELA FINAL - APÓS O RESULTADO DO CÁLCULO--->
+
+
+
+
+</div>

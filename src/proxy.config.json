@@ -1,0 +1,11 @@
+{
+    "/gate/*": {
+        "changeOrigin": true,
+        "target": "https://h-gateprodata.mprj.mp.br/gate",
+        "pathRewrite": {
+            "^/gate": ""
+        },
+        "logLevel": "debug",
+        "secure": false
+    }
+}
